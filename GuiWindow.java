@@ -15,13 +15,15 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 public class GuiWindow extends JFrame implements ActionListener
+
 {
+	
 private JTextArea ta;
 private int count;
 private JMenuBar menuBar;
 private JMenu FileMenu,EditMenu;
 private JScrollPane scrollpane;
-private JMenuItem exitI,cutI,Copy,pasteI,selectI,saveI,loadI;
+private JMenuItem exitI,cutI,Copy,pasteI,selectI,saveI,loadI,Font;
 private String pad;
 private JToolBar toolBar;
 public GuiWindow()
@@ -33,6 +35,9 @@ public GuiWindow()
     Container pane = getContentPane();
     pane.setLayout(new BorderLayout());
 
+    //Font = new Font ("TimesRoman", Font.PLAIN, 10);
+    //System.out.println (Font);    
+    
     count = 0;
     pad = " ";
     ta = new JTextArea(); 
@@ -43,12 +48,13 @@ public GuiWindow()
     exitI = new JMenuItem("Exit");
     cutI = new JMenuItem("Cut");
     Copy = new JMenuItem("Copy");
+    Font = new JMenuItem("Font");
     pasteI = new JMenuItem("Paste");
     selectI = new JMenuItem("Select All");
     saveI = new JMenuItem("Save"); 
     loadI = new JMenuItem("Load"); 
     toolBar = new JToolBar();
-    
+
 
     ta.setLineWrap(true);
     ta.setWrapStyleWord(true);
@@ -65,11 +71,13 @@ public GuiWindow()
     EditMenu.add(Copy);
     EditMenu.add(pasteI);        
     EditMenu.add(selectI);
+    EditMenu.add(Font);
 
     saveI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
     loadI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
     cutI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
     Copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+    Font.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
     pasteI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
     selectI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 
@@ -83,6 +91,7 @@ public GuiWindow()
     Copy.addActionListener(this);
     pasteI.addActionListener(this);
     selectI.addActionListener(this);
+    Font.addActionListener(this);
 
     setVisible(true);
 }
