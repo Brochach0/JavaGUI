@@ -1,126 +1,202 @@
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-
-public class GuiWindow extends JFrame implements ActionListener
-
-{
-	
-private JTextArea ta;
-private int count;
-private JMenuBar menuBar;
-private JMenu FileMenu,EditMenu;
-private JScrollPane scrollpane;
-private JMenuItem exitI,cutI,Copy,pasteI,selectI,saveI,loadI,Font;
-private String pad;
-private JToolBar toolBar;
-public GuiWindow()
-{
-    super("Document");
-    setSize(1080, 640);
-    setLocationRelativeTo(null);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    Container pane = getContentPane();
-    pane.setLayout(new BorderLayout());
-
-    //Font = new Font ("TimesRoman", Font.PLAIN, 10);
-    //System.out.println (Font);    
-    
-    count = 0;
-    pad = " ";
-    ta = new JTextArea(); 
-    menuBar = new JMenuBar(); 
-    FileMenu = new JMenu("File"); 
-    EditMenu = new JMenu("Edit"); 
-    scrollpane = new JScrollPane(ta); 
-    exitI = new JMenuItem("Exit");
-    cutI = new JMenuItem("Cut");
-    Copy = new JMenuItem("Copy");
-    Font = new JMenuItem("Font");
-    pasteI = new JMenuItem("Paste");
-    selectI = new JMenuItem("Select All");
-    saveI = new JMenuItem("Save"); 
-    loadI = new JMenuItem("Load"); 
-    toolBar = new JToolBar();
-
-
-    ta.setLineWrap(true);
-    ta.setWrapStyleWord(true);
-
-    setJMenuBar(menuBar);
-    menuBar.add(FileMenu);
-    menuBar.add(EditMenu);
-
-    FileMenu.add(saveI);
-    FileMenu.add(loadI);
-    FileMenu.add(exitI);
-
-    EditMenu.add(cutI);
-    EditMenu.add(Copy);
-    EditMenu.add(pasteI);        
-    EditMenu.add(selectI);
-    EditMenu.add(Font);
-
-    saveI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-    loadI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-    cutI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
-    Copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
-    Font.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-    pasteI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
-    selectI.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-
-    pane.add(scrollpane,BorderLayout.CENTER);
-    pane.add(toolBar,BorderLayout.SOUTH);
-
-    saveI.addActionListener(this);
-    loadI.addActionListener(this);
-    exitI.addActionListener(this);
-    cutI.addActionListener(this);
-    Copy.addActionListener(this);
-    pasteI.addActionListener(this);
-    selectI.addActionListener(this);
-    Font.addActionListener(this);
-
-    setVisible(true);
-}
-public void actionPerformed(ActionEvent e) 
-{
-    JMenuItem choice = (JMenuItem) e.getSource();
-    if (choice == saveI)
-    {
-    
-    }
-    else if (choice == exitI)
-        System.exit(0);
-    else if (choice == cutI)
-    {
-        pad = ta.getSelectedText();
-        ta.replaceRange("", ta.getSelectionStart(), ta.getSelectionEnd());
-    }
-    else if (choice == Copy)
-        pad = ta.getSelectedText();
-    else if (choice == pasteI)
-        ta.insert(pad, ta.getCaretPosition());
-    else if (choice == selectI)
-        ta.selectAll();
-    {
-    	
-    }
-}
-public static void main(String[] args) 
-{
-    new GuiWindow();
-}
+@SuppressWarnings("serial")
+public class GuiWindow3 extends JFrame {
+   public static final int ROWS = 3;  
+   public static final int COLS = 3;
+ 
+   public static final int CELL_SIZE = 200; // size of the square for the tic tacy
+   public static final int CANVAS_WIDTH = CELL_SIZE * COLS;  
+   public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
+   public static final int GRID_WIDTH = 1;           
+   public static final int GRID_WIDHT_HALF = GRID_WIDTH / 4;
+   public static final int CELL_PADDING = CELL_SIZE / 6;
+   public static final int SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2;
+   public static final int SYMBOL_STROKE_WIDTH = 8;
+ 
+   public enum GameState {
+      PLAYING, DRAW, CROSS_WON, NOUGHT_WON
+   }
+   private GameState currentState;  
+ 
+   public enum Seed {
+      EMPTY, CROSS, NOUGHT
+   }
+   private Seed currentPlayer;  // player in the game
+ 
+   private Seed[][] board   ;
+   private DrawCanvas canvas; 
+   private JLabel statusBar;  
+ 
+   public GuiWindow3() {
+      canvas = new DrawCanvas(); 
+      canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+ 
+      canvas.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseClicked(MouseEvent e) {  // mouse-clicked handler
+            int mouseX = e.getX();
+            int mouseY = e.getY();
+            // Get the row and column clicked
+            int rowSelected = mouseY / CELL_SIZE;
+            int colSelected = mouseX / CELL_SIZE;
+ 
+            if (currentState == GameState.PLAYING) {
+               if (rowSelected >= 0 && rowSelected < ROWS && colSelected >= 0
+                     && colSelected < COLS && board[rowSelected][colSelected] == Seed.EMPTY) {
+                  board[rowSelected][colSelected] = currentPlayer; // Make a move
+                  updateGame(currentPlayer, rowSelected, colSelected); // update state
+                  // Switch player
+                  currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+               }
+            } else {       // game over
+               initGame(); // restart the game
+            }
+            // Refreshed
+            repaint();  
+         }
+      });
+ 
+      statusBar = new JLabel("  ");
+      statusBar.setFont(new Font(Font.DIALOG_INPUT, Font.ITALIC, 15));
+      statusBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 4, 5));
+ 
+      Container cp = getContentPane();
+      cp.setLayout(new BorderLayout());
+      cp.add(canvas, BorderLayout.CENTER);
+      cp.add(statusBar, BorderLayout.PAGE_END); 
+ 
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      pack();  
+      setTitle("TicTacToe.exe");
+      setVisible(true);  
+ 
+      board = new Seed[ROWS][COLS]; 
+      initGame(); 
+   }
+ 
+   public void initGame() {
+      for (int row = 0; row < ROWS; ++row) {
+         for (int col = 0; col < COLS; ++col) {
+            board[row][col] = Seed.EMPTY; 
+         }
+      }
+      currentState = GameState.PLAYING; // ready to play
+      currentPlayer = Seed.CROSS;       // X's play first
+   }
+ 
+   public void updateGame(Seed theSeed, int rowSelected, int colSelected) {
+      if (hasWon(theSeed, rowSelected, colSelected)) {  // Each row is checked to see a winner
+         currentState = (theSeed == Seed.CROSS) ? GameState.CROSS_WON : GameState.NOUGHT_WON;
+      } else if (isDraw()) {  // checks to see any draws within the game
+         currentState = GameState.DRAW;
+      }
+      //Else no tie nor a win/loss game keeps going
+   }
+ 
+   public boolean isDraw() {
+      for (int row = 0; row < ROWS; ++row) {
+         for (int col = 0; col < COLS; ++col) {
+            if (board[row][col] == Seed.EMPTY) {
+               return false; 
+            }
+         }
+      }
+      return true;  // no more empty cell, it's a draw
+   }
+ 
+   /** Return true if the player with "theSeed" has won after placing at
+       (rowSelected, colSelected) */
+   public boolean hasWon(Seed theSeed, int rowSelected, int colSelected) {
+      return (board[rowSelected][0] == theSeed  // 3-in-the-row
+            && board[rowSelected][1] == theSeed
+            && board[rowSelected][2] == theSeed
+       || board[0][colSelected] == theSeed      // 3-in-the-column
+            && board[1][colSelected] == theSeed
+            && board[2][colSelected] == theSeed
+       || rowSelected == colSelected            // 3-in-the-diagonal
+            && board[0][0] == theSeed
+            && board[1][1] == theSeed
+            && board[2][2] == theSeed
+       || rowSelected + colSelected == 2  // 3-in-the-opposite-diagonal
+            && board[0][2] == theSeed
+            && board[1][1] == theSeed
+            && board[2][0] == theSeed);
+   }
+ 
+   /**
+    *  Inner class DrawCanvas (extends JPanel) used for custom graphics drawing.
+    */
+   class DrawCanvas extends JPanel {
+      @Override
+      public void paintComponent(Graphics g) {  // invoke via repaint()
+         super.paintComponent(g);    // fill background
+         setBackground(Color.WHITE); // set its background color
+ 
+         // Draw the grid-lines
+         g.setColor(Color.LIGHT_GRAY);
+         for (int row = 1; row < ROWS; ++row) {
+            g.fillRoundRect(0, CELL_SIZE * row - GRID_WIDHT_HALF,
+                  CANVAS_WIDTH-1, GRID_WIDTH, GRID_WIDTH, GRID_WIDTH);
+         }
+         for (int col = 1; col < COLS; ++col) {
+            g.fillRoundRect(CELL_SIZE * col - GRID_WIDHT_HALF, 0,
+                  GRID_WIDTH, CANVAS_HEIGHT-1, GRID_WIDTH, GRID_WIDTH);
+         }
+ 
+         // Draw the Seeds of all the cells if they are not empty
+         // Use Graphics2D which allows us to set the pen's stroke
+         Graphics2D g2d = (Graphics2D)g;
+         g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND,
+               BasicStroke.JOIN_ROUND));  // Graphics2D only
+         for (int row = 0; row < ROWS; ++row) {
+            for (int col = 0; col < COLS; ++col) {
+               int x1 = col * CELL_SIZE + CELL_PADDING;
+               int y1 = row * CELL_SIZE + CELL_PADDING;
+               if (board[row][col] == Seed.CROSS) {
+                  g2d.setColor(Color.RED);
+                  int x2 = (col + 1) * CELL_SIZE - CELL_PADDING;
+                  int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
+                  g2d.drawLine(x1, y1, x2, y2);
+                  g2d.drawLine(x2, y1, x1, y2);
+               } else if (board[row][col] == Seed.NOUGHT) {
+                  g2d.setColor(Color.BLUE);
+                  g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
+               }
+            }
+         }
+ 
+         // Print status-bar message
+         if (currentState == GameState.PLAYING) {
+            statusBar.setForeground(Color.BLACK);
+            if (currentPlayer == Seed.CROSS) {
+               statusBar.setText("X's Turn");
+            } else {
+               statusBar.setText("O's Turn");
+            }
+         } else if (currentState == GameState.DRAW) {
+            statusBar.setForeground(Color.RED);
+            statusBar.setText("It's a Draw! Click to play again.");
+         } else if (currentState == GameState.CROSS_WON) {
+            statusBar.setForeground(Color.RED);
+            statusBar.setText("'X' Won! Click to play again.");
+         } else if (currentState == GameState.NOUGHT_WON) {
+            statusBar.setForeground(Color.RED);
+            statusBar.setText("'O' Won! Click to play again.");
+         }
+      }
+   }
+ 
+   /** The entry main() method */
+   public static void main(String[] args) {
+      // Run GUI codes in the Event-Dispatching thread for thread safety
+      SwingUtilities.invokeLater(new Runnable() {
+         @Override
+         public void run() {
+            new GuiWindow3(); // Let the constructor do the job
+         }
+      });
+   }
 }
