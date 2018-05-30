@@ -83,7 +83,7 @@ public class GuiWindow3 extends JFrame {
             board[row][col] = Seed.EMPTY; 
          }
       }
-      currentState = GameState.PLAYING; // ready to play
+      currentState = GameState.PLAYING; // Game is ready to play
       currentPlayer = Seed.CROSS;       // X's play first
    }
  
@@ -104,39 +104,34 @@ public class GuiWindow3 extends JFrame {
             }
          }
       }
-      return true;  // no more empty cell, it's a draw
+      return true;  // If all of the boxes have something filled in and no winner. the game is a tie.
    }
  
-   /** Return true if the player with "theSeed" has won after placing at
-       (rowSelected, colSelected) */
    public boolean hasWon(Seed theSeed, int rowSelected, int colSelected) {
-      return (board[rowSelected][0] == theSeed  // 3-in-the-row
+      return (board[rowSelected][0] == theSeed  
             && board[rowSelected][1] == theSeed
             && board[rowSelected][2] == theSeed
-       || board[0][colSelected] == theSeed      // 3-in-the-column
+       || board[0][colSelected] == theSeed    
             && board[1][colSelected] == theSeed
             && board[2][colSelected] == theSeed
-       || rowSelected == colSelected            // 3-in-the-diagonal
+       || rowSelected == colSelected          
             && board[0][0] == theSeed
             && board[1][1] == theSeed
             && board[2][2] == theSeed
-       || rowSelected + colSelected == 2  // 3-in-the-opposite-diagonal
+       || rowSelected + colSelected == 2  
             && board[0][2] == theSeed
             && board[1][1] == theSeed
             && board[2][0] == theSeed);
    }
  
-   /**
-    *  Inner class DrawCanvas (extends JPanel) used for custom graphics drawing.
-    */
+  
    class DrawCanvas extends JPanel {
       @Override
-      public void paintComponent(Graphics g) {  // invoke via repaint()
-         super.paintComponent(g);    // fill background
-         setBackground(Color.WHITE); // set its background color
+      public void paintComponent(Graphics g) {  
+         super.paintComponent(g);    
+         setBackground(Color.LIGHT_GRAY); // Background color
  
-         // Draw the grid-lines
-         g.setColor(Color.LIGHT_GRAY);
+         g.setColor(Color.BLACK);
          for (int row = 1; row < ROWS; ++row) {
             g.fillRoundRect(0, CELL_SIZE * row - GRID_WIDHT_HALF,
                   CANVAS_WIDTH-1, GRID_WIDTH, GRID_WIDTH, GRID_WIDTH);
@@ -146,8 +141,6 @@ public class GuiWindow3 extends JFrame {
                   GRID_WIDTH, CANVAS_HEIGHT-1, GRID_WIDTH, GRID_WIDTH);
          }
  
-         // Draw the Seeds of all the cells if they are not empty
-         // Use Graphics2D which allows us to set the pen's stroke
          Graphics2D g2d = (Graphics2D)g;
          g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND,
                BasicStroke.JOIN_ROUND));  // Graphics2D only
@@ -156,19 +149,18 @@ public class GuiWindow3 extends JFrame {
                int x1 = col * CELL_SIZE + CELL_PADDING;
                int y1 = row * CELL_SIZE + CELL_PADDING;
                if (board[row][col] == Seed.CROSS) {
-                  g2d.setColor(Color.RED);
+                  g2d.setColor(Color.WHITE);
                   int x2 = (col + 1) * CELL_SIZE - CELL_PADDING;
                   int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
                   g2d.drawLine(x1, y1, x2, y2);
                   g2d.drawLine(x2, y1, x1, y2);
                } else if (board[row][col] == Seed.NOUGHT) {
-                  g2d.setColor(Color.BLUE);
+                  g2d.setColor(Color.WHITE);
                   g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
                }
             }
          }
  
-         // Print status-bar message
          if (currentState == GameState.PLAYING) {
             statusBar.setForeground(Color.BLACK);
             if (currentPlayer == Seed.CROSS) {
@@ -177,25 +169,24 @@ public class GuiWindow3 extends JFrame {
                statusBar.setText("O's Turn");
             }
          } else if (currentState == GameState.DRAW) {
-            statusBar.setForeground(Color.RED);
-            statusBar.setText("It's a Draw! Click to play again.");
+            statusBar.setForeground(Color.MAGENTA);
+            statusBar.setText("Nobody Won, It is a Draw.");
          } else if (currentState == GameState.CROSS_WON) {
-            statusBar.setForeground(Color.RED);
-            statusBar.setText("'X' Won! Click to play again.");
+            statusBar.setForeground(Color.MAGENTA);
+            statusBar.setText("'X' Won!/Player 1 Won");
          } else if (currentState == GameState.NOUGHT_WON) {
-            statusBar.setForeground(Color.RED);
-            statusBar.setText("'O' Won! Click to play again.");
+            statusBar.setForeground(Color.MAGENTA);
+            statusBar.setText("'O' Won!/Player 2 Won");
          }
       }
    }
  
-   /** The entry main() method */
    public static void main(String[] args) {
       // Run GUI codes in the Event-Dispatching thread for thread safety
       SwingUtilities.invokeLater(new Runnable() {
          @Override
          public void run() {
-            new GuiWindow3(); // Let the constructor do the job
+            new GuiWindow3(); 
          }
       });
    }
