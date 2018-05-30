@@ -1,12 +1,25 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 @SuppressWarnings("serial")
 public class GuiWindow3 extends JFrame {
    public static final int ROWS = 3;  
    public static final int COLS = 3;
- 
+
    public static final int CELL_SIZE = 200; // size of the square for the tic tacy
    public static final int CANVAS_WIDTH = CELL_SIZE * COLS;  
    public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
@@ -60,7 +73,7 @@ public class GuiWindow3 extends JFrame {
       });
  
       statusBar = new JLabel("  ");
-      statusBar.setFont(new Font(Font.DIALOG_INPUT, Font.ITALIC, 15));
+      statusBar.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 20));
       statusBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 4, 5));
  
       Container cp = getContentPane();
@@ -162,7 +175,7 @@ public class GuiWindow3 extends JFrame {
          }
  
          if (currentState == GameState.PLAYING) {
-            statusBar.setForeground(Color.BLACK);
+            statusBar.setForeground(Color.PINK);
             if (currentPlayer == Seed.CROSS) {
                statusBar.setText("X's Turn");
             } else {
