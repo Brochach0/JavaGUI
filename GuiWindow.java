@@ -20,7 +20,7 @@ public class GuiWindow3 extends JFrame {
    public static final int ROWS = 3;  
    public static final int COLS = 3;
 
-   public static final int CELL_SIZE = 200; // size of the square for the tic tacy
+   public static final int CELL_SIZE = 95; // the game area size
    public static final int CANVAS_WIDTH = CELL_SIZE * COLS;  
    public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
    public static final int GRID_WIDTH = 1;           
@@ -142,9 +142,9 @@ public class GuiWindow3 extends JFrame {
       @Override
       public void paintComponent(Graphics g) {  
          super.paintComponent(g);    
-         setBackground(Color.LIGHT_GRAY); // Background color
+         setBackground(Color.BLACK); // Background color
  
-         g.setColor(Color.BLACK);
+         g.setColor(Color.darkGray);
          for (int row = 1; row < ROWS; ++row) {
             g.fillRoundRect(0, CELL_SIZE * row - GRID_WIDHT_HALF,
                   CANVAS_WIDTH-1, GRID_WIDTH, GRID_WIDTH, GRID_WIDTH);
@@ -162,34 +162,34 @@ public class GuiWindow3 extends JFrame {
                int x1 = col * CELL_SIZE + CELL_PADDING;
                int y1 = row * CELL_SIZE + CELL_PADDING;
                if (board[row][col] == Seed.CROSS) {
-                  g2d.setColor(Color.WHITE);
+                  g2d.setColor(Color.magenta);
                   int x2 = (col + 1) * CELL_SIZE - CELL_PADDING;
                   int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
                   g2d.drawLine(x1, y1, x2, y2);
                   g2d.drawLine(x2, y1, x1, y2);
                } else if (board[row][col] == Seed.NOUGHT) {
-                  g2d.setColor(Color.WHITE);
+                  g2d.setColor(Color.YELLOW);
                   g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
                }
             }
          }
  
          if (currentState == GameState.PLAYING) {
-            statusBar.setForeground(Color.PINK);
+            statusBar.setForeground(Color.BLUE);
             if (currentPlayer == Seed.CROSS) {
                statusBar.setText("X's Turn");
             } else {
                statusBar.setText("O's Turn");
             }
          } else if (currentState == GameState.DRAW) {
-            statusBar.setForeground(Color.MAGENTA);
-            statusBar.setText("Nobody Won, It is a Draw.");
+            statusBar.setForeground(Color.RED);
+            statusBar.setText("It's a Draw! Nobody wins.");
          } else if (currentState == GameState.CROSS_WON) {
             statusBar.setForeground(Color.MAGENTA);
-            statusBar.setText("'X' Won!/Player 1 Won");
+            statusBar.setText("Player 1 Won");
          } else if (currentState == GameState.NOUGHT_WON) {
             statusBar.setForeground(Color.MAGENTA);
-            statusBar.setText("'O' Won!/Player 2 Won");
+            statusBar.setText("Player 2 Won!");
          }
       }
    }
