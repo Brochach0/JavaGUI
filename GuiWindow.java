@@ -8,8 +8,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -72,7 +70,6 @@ import javax.swing.SwingUtilities;
  
       statusBar = new JLabel("  ");
       statusBar.setFont(new Font("TimesRoman", Font.BOLD, 20));
-      statusBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 4, 5));
  
       Container cp = getContentPane();
       cp.setLayout(new BorderLayout());
@@ -99,9 +96,9 @@ import javax.swing.SwingUtilities;
    }
  
    public void updateGame(Seed theSeed, int rowSelected, int colSelected) {
-      if (hasWon(theSeed, rowSelected, colSelected)) {  // Each row is checked to see a winner
+      if (hasWon(theSeed, rowSelected, colSelected)) {  
          currentState = (theSeed == Seed.CROSS) ? GameState.CROSS_WON : GameState.NOUGHT_WON;
-      } else if (isDraw()) {  // checks to see any draws within the game
+      } else if (isDraw()) {  
          currentState = GameState.DRAW;
       }
       //Else no tie nor a win/loss game keeps going
