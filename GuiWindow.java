@@ -15,12 +15,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-@SuppressWarnings("serial")
-public class GuiWindow3 extends JFrame {
+   public class GuiWindow3 extends JFrame {
    public static final int ROWS = 3;  
    public static final int COLS = 3;
 
-   public static final int CELL_SIZE = 95; // the game area size
+   public static final int CELL_SIZE = 95; 
    public static final int CANVAS_WIDTH = CELL_SIZE * COLS;  
    public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
    public static final int GRID_WIDTH = 1;           
@@ -37,7 +36,7 @@ public class GuiWindow3 extends JFrame {
    public enum Seed {
       EMPTY, CROSS, NOUGHT
    }
-   private Seed currentPlayer;  // player in the game
+   private Seed currentPlayer;  
  
    private Seed[][] board   ;
    private DrawCanvas canvas; 
@@ -49,10 +48,9 @@ public class GuiWindow3 extends JFrame {
  
       canvas.addMouseListener(new MouseAdapter() {
          @Override
-         public void mouseClicked(MouseEvent e) {  // mouse-clicked handler
+         public void mouseClicked(MouseEvent e) {  
             int mouseX = e.getX();
             int mouseY = e.getY();
-            // Get the row and column clicked
             int rowSelected = mouseY / CELL_SIZE;
             int colSelected = mouseX / CELL_SIZE;
  
@@ -73,7 +71,7 @@ public class GuiWindow3 extends JFrame {
       });
  
       statusBar = new JLabel("  ");
-      statusBar.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 20));
+      statusBar.setFont(new Font("TimesRoman", Font.BOLD, 20));
       statusBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 4, 5));
  
       Container cp = getContentPane();
@@ -156,7 +154,7 @@ public class GuiWindow3 extends JFrame {
  
          Graphics2D g2d = (Graphics2D)g;
          g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND,
-               BasicStroke.JOIN_ROUND));  // Graphics2D only
+               BasicStroke.JOIN_ROUND));  
          for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
                int x1 = col * CELL_SIZE + CELL_PADDING;
@@ -183,7 +181,7 @@ public class GuiWindow3 extends JFrame {
             }
          } else if (currentState == GameState.DRAW) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("It's a Draw! Nobody wins.");
+            statusBar.setText("It's a Draw!");
          } else if (currentState == GameState.CROSS_WON) {
             statusBar.setForeground(Color.MAGENTA);
             statusBar.setText("Player 1 Won");
@@ -195,7 +193,6 @@ public class GuiWindow3 extends JFrame {
    }
  
    public static void main(String[] args) {
-      // Run GUI codes in the Event-Dispatching thread for thread safety
       SwingUtilities.invokeLater(new Runnable() {
          @Override
          public void run() {
