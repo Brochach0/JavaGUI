@@ -1,3 +1,4 @@
+package sandbox;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,11 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-   public class GuiWindow3 extends JFrame {
+   public class GUIWindow extends JFrame {
    public static final int ROWS = 3;  
    public static final int COLS = 3;
 
-   public static final int CELL_SIZE = 95; 
+   public static final int CELL_SIZE = 80; 
    public static final int CANVAS_WIDTH = CELL_SIZE * COLS;  
    public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
    public static final int GRID_WIDTH = 1;           
@@ -30,107 +31,101 @@ import javax.swing.SwingUtilities;
       PLAYING, DRAW, CROSS_WON, NOUGHT_WON
    }
    private GameState currentState;  
+   
+   private Seed[][] board   ;
+   private DrawCanvas canvas; 
+   private JLabel statusBar; 
  
    public enum Seed {
       EMPTY, CROSS, NOUGHT
    }
    private Seed currentPlayer;  
  
-   private Seed[][] board   ;
-   private DrawCanvas canvas; 
-   private JLabel statusBar;  
- 
-   public GuiWindow3() {
-      canvas = new DrawCanvas(); 
-      canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
- 
-      canvas.addMouseListener(new MouseAdapter() {
-         @Override
-         public void mouseClicked(MouseEvent e) {  
-            int mouseX = e.getX();
-            int mouseY = e.getY();
-            int rowSelected = mouseY / CELL_SIZE;
-            int colSelected = mouseX / CELL_SIZE;
- 
-            if (currentState == GameState.PLAYING) {
-               if (rowSelected >= 0 && rowSelected < ROWS && colSelected >= 0
-                     && colSelected < COLS && board[rowSelected][colSelected] == Seed.EMPTY) {
-                  board[rowSelected][colSelected] = currentPlayer; // Make a move
-                  updateGame(currentPlayer, rowSelected, colSelected); // update state
-                  // Switch player
-                  currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
-               }
-            } else {       // game over
-               initGame(); // restart the game
-            }
-            // Refreshed
-            repaint();  
-         }
-      });
- 
-      statusBar = new JLabel("  ");
-      statusBar.setFont(new Font("TimesRoman", Font.BOLD, 20));
- 
-      Container cp = getContentPane();
-      cp.setLayout(new BorderLayout());
-      cp.add(canvas, BorderLayout.CENTER);
-      cp.add(statusBar, BorderLayout.PAGE_END); 
- 
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      pack();  
-      setTitle("TicTacToe.exe");
-      setVisible(true);  
- 
-      board = new Seed[ROWS][COLS]; 
-      initGame(); 
-   }
- 
-   public void initGame() {
-      for (int row = 0; row < ROWS; ++row) {
-         for (int col = 0; col < COLS; ++col) {
-            board[row][col] = Seed.EMPTY; 
-         }
-      }
-      currentState = GameState.PLAYING; // Game is ready to play
-      currentPlayer = Seed.CROSS;       // X's play first
-   }
- 
-   public void updateGame(Seed theSeed, int rowSelected, int colSelected) {
-      if (hasWon(theSeed, rowSelected, colSelected)) {  
-         currentState = (theSeed == Seed.CROSS) ? GameState.CROSS_WON : GameState.NOUGHT_WON;
-      } else if (isDraw()) {  
-         currentState = GameState.DRAW;
-      }
-      //Else no tie nor a win/loss game keeps going
-   }
- 
-   public boolean isDraw() {
-      for (int row = 0; row < ROWS; ++row) {
-         for (int col = 0; col < COLS; ++col) {
-            if (board[row][col] == Seed.EMPTY) {
-               return false; 
-            }
-         }
-      }
-      return true;  // If all of the boxes have something filled in and no winner. the game is a tie.
-   }
- 
    public boolean hasWon(Seed theSeed, int rowSelected, int colSelected) {
-      return (board[rowSelected][0] == theSeed  
-            && board[rowSelected][1] == theSeed
-            && board[rowSelected][2] == theSeed
-       || board[0][colSelected] == theSeed    
-            && board[1][colSelected] == theSeed
-            && board[2][colSelected] == theSeed
-       || rowSelected == colSelected          
-            && board[0][0] == theSeed
-            && board[1][1] == theSeed
-            && board[2][2] == theSeed
-       || rowSelected + colSelected == 2  
-            && board[0][2] == theSeed
-            && board[1][1] == theSeed
-            && board[2][0] == theSeed);
-   }
+	      return (board[rowSelected][0] == theSeed  
+	            && board[rowSelected][1] == theSeed
+	            && board[rowSelected][2] == theSeed
+	       || board[0][colSelected] == theSeed    
+	            && board[1][colSelected] == theSeed
+	            && board[2][colSelected] == theSeed
+	       || rowSelected == colSelected          
+	            && board[0][0] == theSeed
+	            && board[1][1] == theSeed
+	            && board[2][2] == theSeed
+	       || rowSelected + colSelected == 2  
+	            && board[0][2] == theSeed
+	            && board[1][1] == theSeed
+	            && board[2][0] == theSeed);
+	   }
+   
+
+ 
+   
+   public void initGame() {
+	      for (int row = 0; row < ROWS; ++row) {
+	         for (int col = 0; col < COLS; ++col) {
+	            board[row][col] = Seed.EMPTY; 
+	         }
+	      }
+	      currentState = GameState.PLAYING; // Game is ready to play
+	      currentPlayer = Seed.CROSS;       // X's play first
+	   }
+   public GUIWindow() {
+	      canvas = new DrawCanvas(); 
+	      canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+	 
+	      canvas.addMouseListener(new MouseAdapter() {
+	         @Override
+	         public void mouseClicked(MouseEvent e) {  
+	            int mouseX = e.getX();
+	            int mouseY = e.getY();
+	            int rowSelected = mouseY / CELL_SIZE;
+	            int colSelected = mouseX / CELL_SIZE;
+	 
+	            if (currentState == GameState.PLAYING) {
+	               if (rowSelected >= 0 && rowSelected < ROWS && colSelected >= 0
+	                     && colSelected < COLS && board[rowSelected][colSelected] == Seed.EMPTY) {
+	                  board[rowSelected][colSelected] = currentPlayer; // Make a move
+	                  updateGame(currentPlayer, rowSelected, colSelected); // update state
+	                  // Switch player
+	                  currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+	               }
+	            } else {       // game over
+	               initGame(); // restart the game
+	            }
+	            // Refreshed
+	            repaint();  
+	         }
+	      });
+	 
+	      statusBar = new JLabel("  ");
+	      statusBar.setFont(new Font("TimesRoman", Font.BOLD, 20));
+	 
+	      Container cp = getContentPane();
+	      cp.setLayout(new BorderLayout());
+	      cp.add(canvas, BorderLayout.CENTER);
+	      cp.add(statusBar, BorderLayout.PAGE_END); 
+	 
+	      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	      pack();  
+	      setTitle("TicTacToe.exe");
+	      setVisible(true);  
+	 
+	      board = new Seed[ROWS][COLS]; 
+	      initGame(); 
+	   }
+   
+   
+   public void updateGame(Seed theSeed, int rowSelected, int colSelected) {
+	      if (hasWon(theSeed, rowSelected, colSelected)) {  
+	         currentState = (theSeed == Seed.CROSS) ? GameState.CROSS_WON : GameState.NOUGHT_WON;
+	      } else if (isDraw()) {  
+	         currentState = GameState.DRAW;
+	      }
+	      //Else no tie nor a win/loss game keeps going
+	   }
+	 
+ 
  
   
    class DrawCanvas extends JPanel {
@@ -188,13 +183,29 @@ import javax.swing.SwingUtilities;
          }
       }
    }
+   
+   public boolean isDraw() {
+	      for (int row = 0; row < ROWS; ++row) {
+	         for (int col = 0; col < COLS; ++col) {
+	            if (board[row][col] == Seed.EMPTY) {
+	               return false; 
+	            }
+	         }
+	      }
+	      return true;  // If all of the boxes have something filled in and no winner. the game is a tie.
+	   }
+	   
  
    public static void main(String[] args) {
       SwingUtilities.invokeLater(new Runnable() {
          @Override
          public void run() {
-            new GuiWindow3(); 
+            new GUIWindow(); 
+            
+
          }
       });
    }
 }
+
+
